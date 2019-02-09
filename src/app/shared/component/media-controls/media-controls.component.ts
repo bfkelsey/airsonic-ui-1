@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MediaStream, StreamService } from '../../service/stream.service';
 import { AlbumService } from '../../service/album.service';
+import { VgAPI } from 'videogular2/core';
 
 export const VOLUME = 'volume';
 
@@ -12,51 +13,23 @@ export const VOLUME = 'volume';
 
 export class MediaControlsComponent implements OnInit {
   stream: MediaStream;
-  volume: number;
-  muted = false;
 
-  constructor(private streamService: StreamService) { }
+  constructor(private streamService: StreamService, private vgApi: VgAPI) { }
 
   ngOnInit() {
-    this.streamService.onStreamStart(stream => this.stream = stream);
-    if (localStorage.getItem(VOLUME) === null) {
-      this.volume = this.streamService.volume;
-    } else {
-      this.volume = Number(localStorage.getItem(VOLUME));
-      this.volumeChange(this.volume);
-    }
+    this.streamService.onStreamStart(stream => {
+      console.log(stream);
+      this.stream = stream;
+      this.vgApi.play();
+    });
   }
 
-  pause() {
-    this.streamService.pause();
+  onPlayerReady() {
+    this.vgApi.getDefaultMedia().subscriptions.loadedMetadata.subscribe(this.playAudio.bind(this));
   }
 
-  play() {
-    this.streamService.play();
-  }
-
-  next() {
-    this.streamService.next();
-  }
-
-  volumeChange(val) {
-    this.muted = val === 0;
-    this.streamService.volume = val;
-  }
-
-  volumeMute() {
-    if (!this.muted) {
-      localStorage.setItem(VOLUME, this.volume.toString());
-      this.volumeChange(0);
-      this.volume = 0;
-    } else {
-      this.volume = Number(localStorage.getItem(VOLUME));
-      this.volumeChange(this.volume);
-    }
-  }
-
-  previous() {
-    this.streamService.previous();
+  playAudio() {
+    this.vgApi.play();
   }
 
   albumImageUrl(albumImageSize) {

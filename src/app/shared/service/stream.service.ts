@@ -41,14 +41,11 @@ export class StreamService {
   }
 
   streamFile(mediaFile: MediaFile) {
-    this.audioProvider.pause();
     const userInfo: MyUser = JSON.parse(localStorage.getItem(USER_INFO));
     const streamUrl = `${userInfo.server}/rest/stream?id=${mediaFile.id}&v=${environment.apiVersion}&u=${userInfo.name}` +
       `&s=${userInfo.salt}&t=${userInfo.token}&c=${environment.applicationName}`;
-    this.audioProvider.src = streamUrl;
     try {
-      this.audioProvider.play();
-      this.updateStream(true, mediaFile);
+      this.updateStream(true, mediaFile, streamUrl);
     } catch (e) {
       // Browser doesn't support what we are playing?
       console.log(e);
@@ -95,13 +92,14 @@ export class StreamService {
     }
   }
 
-  private updateStream(isPlaying: boolean, mediaFile?: MediaFile) {
+  private updateStream(isPlaying: boolean, mediaFile?: MediaFile, url?: string) {
     if (mediaFile) {
       this.currentMediaFile = mediaFile;
     }
     this.streamObserver.next({
       isPlaying: isPlaying,
-      mediaFile: this.currentMediaFile
+      mediaFile: this.currentMediaFile,
+      url: url
     });
   }
 }
@@ -109,4 +107,5 @@ export class StreamService {
 export interface MediaStream {
   isPlaying: boolean;
   mediaFile?: MediaFile;
+  url: string;
 }

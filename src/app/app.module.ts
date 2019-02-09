@@ -38,6 +38,10 @@ import { ProfileComponent } from './profile/profile.component';
 import { SideMenuComponent } from './side-menu/side-menu.component';
 import { SettingsComponent } from './settings/settings.component';
 import { MediaFoldersSettingsComponent } from './settings/media-folders-settings/media-folders-settings.component';
+import { VgBufferingModule } from 'videogular2/buffering';
+import { VgOverlayPlayModule } from 'videogular2/overlay-play';
+import { VgControlsModule } from 'videogular2/controls';
+import { VgCoreModule } from 'videogular2/core';
 
 // Ngx-translate loader
 export function HttpLoaderFactory(http: HttpClient) {
@@ -70,6 +74,10 @@ export function HttpLoaderFactory(http: HttpClient) {
     AppRoutingModule,
     FormsModule,
     InfiniteScrollModule,
+    VgCoreModule,
+    VgControlsModule,
+    VgOverlayPlayModule,
+    VgBufferingModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
